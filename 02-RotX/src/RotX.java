@@ -7,7 +7,6 @@ public class RotX {
         String[] inicials = {"ABC","xyz","Hola, Mr. calçot","Pedró, per tu què és?"};
         
         System.out.println("XIFRAT\n------------");
-        
         String[] xifrades = new String[4];
         for (int i = 0; i < inicials.length; i++) {
             xifrades[i] = xifraRotX(inicials[i], 2);
@@ -37,52 +36,46 @@ public class RotX {
         return -1;
     }
 
-    public static String xifraRotX(String cadena, int rotacio) {
-        String resultat = "";
+    private static String fesRotX(String cadena, int rotacio) {
+        StringBuffer resultat = new StringBuffer();
         for (int i = 0; i < cadena.length(); i++) {
             char c = cadena.charAt(i);
+            boolean esMayu = false;
 
-            if (Character.isLetter(c)) {
-                if (Character.isLowerCase(c)) {
-                    resultat += MINS[(trobaIndex(c, MINS)+rotacio)%MINS.length];
+            // Trobar pos si no la troba a MINS, la busca a MAYUS
+            int posChar = trobaIndex(c, MINS);
+            if (posChar < 0) {
+                posChar = trobaIndex(c, MAYUS);
+                esMayu = true;
+            }
+            // Si no s'ha trobat a MAYUS, retornem el caracter actual.
+            if (posChar < 0) {
+                resultat.append(c);
+                continue;
+            }
 
-                } else if (Character.isUpperCase(c)) {
-                    resultat += MAYUS[(trobaIndex(c, MAYUS)+rotacio)%MAYUS.length];
-                }
+            int newPosChar = (posChar + rotacio) % MINS.length;
+            if (newPosChar < 0) newPosChar = newPosChar + MINS.length;
+
+            if (esMayu) {
+                resultat.append(MAYUS[newPosChar]);
             } else {
-                resultat += c;
+                resultat.append(MINS[newPosChar]);
             }
         }
+        return resultat.toString();
+    }
 
-        return resultat;
+    public static String xifraRotX(String cadena, int rotacio) {
+        return fesRotX(cadena, rotacio);
     }
 
     public static String desxifraRotX(String cadena, int rotacio) {
-        String resultat = "";
-        for (int i = 0; i < cadena.length(); i++) {
-            char c = cadena.charAt(i);
-
-            if (Character.isLetter(c)) {
-                if (Character.isLowerCase(c)) {
-                    int index = (trobaIndex(c, MINS)-rotacio);
-                    if (index < 0) index = index + MINS.length;
-                    resultat += MINS[index%MINS.length];
-
-                } else if (Character.isUpperCase(c)) {
-                    int index = (trobaIndex(c, MAYUS)-rotacio);
-                    if (index < 0) index = index + MAYUS.length;
-                    resultat += MAYUS[index%MAYUS.length];
-                }
-            } else {
-                resultat += c;
-            }
-        }
-
-        return resultat;
+        return fesRotX(cadena, -rotacio);
     }
 
     public static void forçaBrutaRotX(String cadenaXifrada) {
-        for (int i = 0; i <= 28; i++) {
+        for (int i = 0; i < MINS.length; i++) {
             System.out.printf("(%d) %s\n", i, desxifraRotX(cadenaXifrada, i));
         }
     }
