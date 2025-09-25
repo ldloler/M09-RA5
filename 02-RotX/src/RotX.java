@@ -9,8 +9,8 @@ public class RotX {
         System.out.println("XIFRAT\n------------");
         String[] xifrades = new String[4];
         for (int i = 0; i < inicials.length; i++) {
-            xifrades[i] = xifraRotX(inicials[i], 2);
-            System.out.printf("%s => %s\n", inicials[i], xifrades[i]);
+            xifrades[i] = xifraRotX(inicials[i], i*2);
+            System.out.printf("(%d)-%s => %s\n", i*2, inicials[i], xifrades[i]);
         }
         System.out.println();
 
@@ -18,11 +18,14 @@ public class RotX {
 
         String[] desxifrades = new String[4];
         for (int i = 0; i < xifrades.length; i++) {
-            desxifrades[i] = desxifraRotX(xifrades[i], 2);
-            System.out.printf("%s => %s\n", xifrades[i], desxifrades[i]);
+            desxifrades[i] = desxifraRotX(xifrades[i], i*2);
+            System.out.printf("(%d)-%s => %s\n", i*2, xifrades[i], desxifrades[i]);
         }
+        System.out.println();
 
-        forçaBrutaRotX(xifrades[3]);
+        String cadenaXForçar = "Úiüht, úiü wx ùxì ív?";
+        System.out.println("Missatge xifrat: " + cadenaXForçar + "\n------------");
+        forçaBrutaRotX(cadenaXForçar);
     }
 
     // Retorna la possicio d'un char en un char[]
@@ -54,15 +57,18 @@ public class RotX {
                 continue;
             }
 
+            // Calcular la nova posicio
             int newPosChar = (posChar + rotacio) % MINS.length;
             if (newPosChar < 0) newPosChar = newPosChar + MINS.length;
 
+            // Guardar, depen de si es Majuscula o Minuscula la lletra pertinent.
             if (esMayu) {
                 resultat.append(MAYUS[newPosChar]);
             } else {
                 resultat.append(MINS[newPosChar]);
             }
         }
+        
         return resultat.toString();
     }
 
