@@ -84,5 +84,5 @@ public class RotX {
         for (int i = 0; i < MINS.length; i++) {
             System.out.printf("(%d) %s\n", i, desxifraRotX(cadenaXifrada, i));
         }
-    }
+    } 
 }
