@@ -5,8 +5,8 @@ import java.util.Collections;
 public class Monoalfabetic {
 
     // Abecedaris, el normal o Base i el permutat.
-    final static char[] ABCORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
-    final static char[] ABC = permutaAlfabet();
+    private final static char[] ABCORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
+    private final static char[] ABC = permutaAlfabet();
 
     // Codi amb les proves.
     public static void main(String[] args) {
@@ -77,7 +77,7 @@ public class Monoalfabetic {
         return aplicaMonoAlfa(cadena, 'D');
     }
 
-    // Crea l'alfabet permutat per al xifratge.
+    // Crea l'alfabet permutat per al xifratge. Retorna una char[].
     public static char[] permutaAlfabet() {
         List<Character> abcList = carregarABC();
         Collections.shuffle(abcList);
