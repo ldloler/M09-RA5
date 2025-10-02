@@ -4,9 +4,11 @@ import java.util.Collections;
 
 public class Monoalfabetic {
 
+    // Abecedaris, el normal o Base i el permutat.
     final static char[] ABCORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
     final static char[] ABC = permutaAlfabet();
 
+    // Codi amb les proves.
     public static void main(String[] args) {
         String[] inicials = { "ABC", "xyz", "Hola, Mr. calçot", "Pedró, per tu què és?" };
         
@@ -28,60 +30,54 @@ public class Monoalfabetic {
         }
     }
 
+    // Aplica el xifratge o el desxifratge de la cadena.
+    //      Envia el char 'D' a <metode> per Desxifrar la cadena 
+    //      qualsevol altre caracter xifrará la cadena.
+    private static String aplicaMonoAlfa(String cadena, char metode) {
+        char[] base = ABCORIGINAL;
+        char[] codificació = ABC;
+        if (metode == 'D') {
+            base = ABC;
+            codificació = ABCORIGINAL;
+        }
+        
+        StringBuilder resoltat = new StringBuilder();
+
+        for (int i = 0; i < cadena.length(); i++) {
+            char c = cadena.charAt(i);
+
+            if (Character.isLetter(c)) {
+                for (int index = 0; index < base.length; index++) {
+                    char charBase = base[index];
+
+                    if (charBase == c) {
+                        resoltat.append(codificació[index]);
+                        break;
+                    }
+                    else if (Character.toLowerCase(charBase) == c) {
+                        resoltat.append(Character.toLowerCase(codificació[index]));
+                        break;
+                    }
+                }
+            } else {
+                resoltat.append(c);
+            }
+        }
+
+        return resoltat.toString();
+    }
+
+    // Xifra la cadena amb xifratge MonoAlfabetic.
     public static String xifraMonoAlfa(String cadena) {
-        StringBuilder resoltat = new StringBuilder();
-
-        for (int i = 0; i < cadena.length(); i++) {
-            char c = cadena.charAt(i);
-
-            if (Character.isLetter(c)) {
-                for (int index = 0; index < ABCORIGINAL.length; index++) {
-                    char charABCO = ABCORIGINAL[index];
-
-                    if (charABCO == c) {
-                        resoltat.append(ABC[index]);
-                        break;
-                    }
-                    else if (Character.toLowerCase(charABCO) == c) {
-                        resoltat.append(Character.toLowerCase(ABC[index]));
-                        break;
-                    }
-                }
-            } else {
-                resoltat.append(c);
-            }
-        }
-
-        return resoltat.toString();
+        return aplicaMonoAlfa(cadena, 'X');
     }
 
+    // Desxifra la cadena amb xifratge MonoAlfabetic.
     public static String desxifraMonoAlfa(String cadena) {
-        StringBuilder resoltat = new StringBuilder();
-
-        for (int i = 0; i < cadena.length(); i++) {
-            char c = cadena.charAt(i);
-            
-            if (Character.isLetter(c)) {
-                for (int index = 0; index < ABC.length; index++) {
-                    char charABC = ABC[index];
-
-                    if (charABC == c) {
-                        resoltat.append(ABCORIGINAL[index]);
-                        break;
-                    }
-                    else if (Character.toLowerCase(charABC) == c) {
-                        resoltat.append(Character.toLowerCase(ABCORIGINAL[index]));
-                        break;
-                    }
-                }
-            } else {
-                resoltat.append(c);
-            }
-        }
-
-        return resoltat.toString();
+        return aplicaMonoAlfa(cadena, 'D');
     }
 
+    // Crea l'alfabet permutat per al xifratge.
     public static char[] permutaAlfabet() {
         List<Character> abcList = carregarABC();
         Collections.shuffle(abcList);
@@ -94,6 +90,7 @@ public class Monoalfabetic {
         return resoltat;
     }
 
+    // Carrega en una List<Character> un char[]
     private static List<Character> carregarABC() {
         List<Character> abcList = new ArrayList<>();
 
