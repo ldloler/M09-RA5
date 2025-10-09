@@ -51,14 +51,14 @@ public class Polialfabetic {
     }
 
     // Aplica el xifratge o el desxifratge de la cadena.
-    //      Envia el char 'D' a <metode> per Desxifrar la cadena 
-    //      qualsevol altre caracter xifrará la cadena.
-    private static String aplicaMonoAlfa(String cadena, char metode) {
+    //      Si esDeixifre es True, es deixifra la cadena
+    //      Si esDeixifre es False, es xifra la cadena.
+    private static String aplicaMonoAlfa(String cadena, boolean esDeixifre) {
         // Assigna quin es l'alfabet base i quin el codificat per a la traducció.
-        //      Funciona depenent de com es crida la funcio. com s'ha explicat a la capçalera del metode.
+        //      Funciona depenent de com es crida la funcio. Com s'ha explicat a la capçalera del metode.
         char[] base = ABCORIGINAL;
         char[] codificació = new char[1];
-        if (metode == 'D') {
+        if (esDeixifre) {
             codificació = ABCORIGINAL;
         }
         
@@ -72,7 +72,7 @@ public class Polialfabetic {
 
             // Assigna quin es l'alfabet base i quin el codificat per a la traducció.
             //      Funciona com al inici del metode.
-            if (metode == 'D') { base = abc; }
+            if (esDeixifre) { base = abc; }
             else { codificació = abc; }
 
             if (Character.isLetter(c)) {
@@ -98,12 +98,12 @@ public class Polialfabetic {
 
     // Xifra la cadena amb xifratge MonoAlfabetic.
     public static String xifraPoliAlfa(String cadena) {
-        return aplicaMonoAlfa(cadena, 'X');
+        return aplicaMonoAlfa(cadena, false);
     }
 
     // Desxifra la cadena amb xifratge MonoAlfabetic.
     public static String desxifraPoliAlfa(String cadena) {
-        return aplicaMonoAlfa(cadena, 'D');
+        return aplicaMonoAlfa(cadena, true);
     }
 
     // Carrega en una List<Character> un char[]
