@@ -13,8 +13,8 @@ public class Polialfabetic {
     private static Random random;
 
     // Abecedaris, el normal o Base i el permutat.
-    private final static char[] ABCORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
-    private static char[] abc;
+    private final static char[] ABCCEDARIORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
+    private static char[] abcedariPermutat;
 
     // Codi main proporcionat pel professor.
     public static void main(String[] args) {
@@ -43,9 +43,9 @@ public class Polialfabetic {
         List<Character> abcList = carregarABC();
         Collections.shuffle(abcList, random);
 
-        abc = new char[abcList.size()];
-        for (int i = 0; i < abc.length; i++) {
-            abc[i] = abcList.get(i);
+        abcedariPermutat = new char[abcList.size()];
+        for (int i = 0; i < abcedariPermutat.length; i++) {
+            abcedariPermutat[i] = abcList.get(i);
         }
         
     }
@@ -53,13 +53,13 @@ public class Polialfabetic {
     // Aplica el xifratge o el desxifratge de la cadena.
     //      Si esDeixifre es True, es deixifra la cadena
     //      Si esDeixifre es False, es xifra la cadena.
-    private static String aplicaMonoAlfa(String cadena, boolean esDeixifre) {
+    private static String aplicaPoliAlfa(String cadena, boolean esDeixifre) {
         // Assigna quin es l'alfabet base i quin el codificat per a la traducció.
         //      Funciona depenent de com es crida la funcio. Com s'ha explicat a la capçalera del metode.
-        char[] base = ABCORIGINAL;
+        char[] base = ABCCEDARIORIGINAL;
         char[] codificació = new char[1];
         if (esDeixifre) {
-            codificació = ABCORIGINAL;
+            codificació = ABCCEDARIORIGINAL;
         }
         
         StringBuilder resoltat = new StringBuilder();
@@ -72,8 +72,8 @@ public class Polialfabetic {
 
             // Assigna quin es l'alfabet base i quin el codificat per a la traducció.
             //      Funciona com al inici del metode.
-            if (esDeixifre) { base = abc; }
-            else { codificació = abc; }
+            if (esDeixifre) { base = abcedariPermutat; }
+            else { codificació = abcedariPermutat; }
 
             if (Character.isLetter(c)) {
                 for (int index = 0; index < base.length; index++) {
@@ -98,19 +98,19 @@ public class Polialfabetic {
 
     // Xifra la cadena amb xifratge MonoAlfabetic.
     public static String xifraPoliAlfa(String cadena) {
-        return aplicaMonoAlfa(cadena, false);
+        return aplicaPoliAlfa(cadena, false);
     }
 
     // Desxifra la cadena amb xifratge MonoAlfabetic.
     public static String desxifraPoliAlfa(String cadena) {
-        return aplicaMonoAlfa(cadena, true);
+        return aplicaPoliAlfa(cadena, true);
     }
 
     // Carrega en una List<Character> un char[]
     private static List<Character> carregarABC() {
         List<Character> abcList = new ArrayList<>();
 
-        for (char c : ABCORIGINAL) {
+        for (char c : ABCCEDARIORIGINAL) {
             abcList.add(c);
         }
 
