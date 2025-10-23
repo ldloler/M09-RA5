@@ -7,40 +7,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class XifradorPolialfabetic {
+import iticbcn.xifratge.errors.ClauNoSuportada;
+
+public class XifradorPolialfabetic implements Xifrador{
 
     // Clau i objecte random.
-    private static final Long KEY = (long) 12345;
+    //private static final Long KEY = (long) 12345;
     private static Random random;
 
     // Abecedaris, el normal o Base i el permutat.
     private final static char[] ABCCEDARIORIGINAL = "AÁÀÄBCÇDEÉÈËFIÍÌÏGHJKLMNÑOÓÒÖPQUÚÙÜRSTVWXYZ".toCharArray();
     private static char[] abcedariPermutat;
 
-    // Codi main proporcionat pel professor.
-    public static void main(String[] args) {
-        String msgs[] = { "Test 01 àrbitre, coixi, Perímetre",
-                "Test 02 Taüll, DÍA, año",
-                "Test 03 Peça, Òrrius, Bòvila" };
-        String msgsXifrats[] = new String[msgs.length];
-
-        System.out.println("Xifratge:\n--------");
-        for (int i = 0; i < msgs.length; i++) {
-            initRandom(KEY);
-            msgsXifrats[i] = xifraPoliAlfa(msgs[i]);
-            System.out.printf("%-34s -> %s%n", msgs[i], msgsXifrats[i]);
-        }
-
-        System.out.println("Desxifratge:\n----------");
-        for (int i = 0; i < msgs.length; i++) {
-            initRandom(KEY);
-            String msg = desxifraPoliAlfa(msgsXifrats[i]);
-            System.out.printf("%-34s -> %s%n", msgsXifrats[i], msg);
-        }
-    }
-
      // Crea l'alfabet permutat per al xifratge. Retorna una char[].
-    public static void permutaAlfabet() {
+    private void permutaAlfabet() {
         List<Character> abcList = carregarABC();
         Collections.shuffle(abcList, random);
 
@@ -54,7 +34,7 @@ public class XifradorPolialfabetic {
     // Aplica el xifratge o el desxifratge de la cadena.
     //      Si esDeixifre es True, es deixifra la cadena
     //      Si esDeixifre es False, es xifra la cadena.
-    private static String aplicaPoliAlfa(String cadena, boolean esDeixifre) {
+    private String aplicaPoliAlfa(String cadena, boolean esDeixifre) {
         // Assigna quin es l'alfabet base i quin el codificat per a la traducció.
         //      Funciona depenent de com es crida la funcio. Com s'ha explicat a la capçalera del metode.
         char[] base = ABCCEDARIORIGINAL;
@@ -98,17 +78,17 @@ public class XifradorPolialfabetic {
     }
 
     // Xifra la cadena amb xifratge MonoAlfabetic.
-    public static String xifraPoliAlfa(String cadena) {
+    private String xifraPoliAlfa(String cadena) {
         return aplicaPoliAlfa(cadena, false);
     }
 
     // Desxifra la cadena amb xifratge MonoAlfabetic.
-    public static String desxifraPoliAlfa(String cadena) {
+    private String desxifraPoliAlfa(String cadena) {
         return aplicaPoliAlfa(cadena, true);
     }
 
     // Carrega en una List<Character> un char[]
-    private static List<Character> carregarABC() {
+    private List<Character> carregarABC() {
         List<Character> abcList = new ArrayList<>();
 
         for (char c : ABCCEDARIORIGINAL) {
@@ -118,7 +98,27 @@ public class XifradorPolialfabetic {
         return abcList;
     }
 
-    private static void initRandom(Long clau) {
+    private void initRandom(Long clau) {
         random = new Random(clau);
+    }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        try {
+            initRandom(Long.parseLong(clau));
+            return new TextXifrat(xifraPoliAlfa(msg).getBytes());
+        } catch (Exception e) {
+            throw new ClauNoSuportada("La clau per xifrat Polialfabètic ha de ser un String convertible a long");
+        }
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        try {
+            initRandom(Long.parseLong(clau));
+            return desxifraPoliAlfa(xifrat.toString());
+        } catch (Exception e) {
+            throw new ClauNoSuportada("La clau de Polialfabètic ha de ser un String convertible a long");
+        }
     }
 }

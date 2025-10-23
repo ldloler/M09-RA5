@@ -1,37 +1,40 @@
 package iticbcn.xifratge;
-public class XifradorRotX {
-    
+
+import iticbcn.xifratge.errors.ClauNoSuportada;
+
+public class XifradorRotX implements Xifrador {
+
     // Variables amb l'abecedari.
     final static char[] MINS = "aáàäbcçdeéèëfiíìïghjklmnñoóòöpquúùürstvwxyz".toCharArray();
     final static char[] MAYUS = "aáàäbcçdeéèëfiíìïghjklmnñoóòöpquúùürstvwxyz".toUpperCase().toCharArray();
-    public static void main(String[] args) {
-        String[] inicials = {"ABC","xyz","Hola, Mr. calçot","Pedró, per tu què és?"};
-        
-        System.out.println("XIFRAT\n------------");
-        String[] xifrades = new String[4];
-        for (int i = 0; i < inicials.length; i++) {
-            xifrades[i] = xifraRotX(inicials[i], i*2);
-            System.out.printf("(%d)-%s => %s\n", i*2, inicials[i], xifrades[i]);
-        }
-        System.out.println();
+    // public static void main(String[] args) {
+    // String[] inicials = {"ABC","xyz","Hola, Mr. calçot","Pedró, per tu què és?"};
 
-        System.out.println("DESXIFRAT\n------------");
+    // System.out.println("XIFRAT\n------------");
+    // String[] xifrades = new String[4];
+    // for (int i = 0; i < inicials.length; i++) {
+    // xifrades[i] = xifraRotX(inicials[i], i*2);
+    // System.out.printf("(%d)-%s => %s\n", i*2, inicials[i], xifrades[i]);
+    // }
+    // System.out.println();
 
-        String[] desxifrades = new String[4];
-        for (int i = 0; i < xifrades.length; i++) {
-            desxifrades[i] = desxifraRotX(xifrades[i], i*2);
-            System.out.printf("(%d)-%s => %s\n", i*2, xifrades[i], desxifrades[i]);
-        }
-        System.out.println();
+    // System.out.println("DESXIFRAT\n------------");
 
-        String cadenaXForçar = "Úiüht, úiü wx ùxì ív?";
-        System.out.println("Missatge xifrat: " + cadenaXForçar + "\n------------");
-        forçaBrutaRotX(cadenaXForçar);
-    }
+    // String[] desxifrades = new String[4];
+    // for (int i = 0; i < xifrades.length; i++) {
+    // desxifrades[i] = desxifraRotX(xifrades[i], i*2);
+    // System.out.printf("(%d)-%s => %s\n", i*2, xifrades[i], desxifrades[i]);
+    // }
+    // System.out.println();
+
+    // String cadenaXForçar = "Úiüht, úiü wx ùxì ív?";
+    // System.out.println("Missatge xifrat: " + cadenaXForçar + "\n------------");
+    // forçaBrutaRotX(cadenaXForçar);
+    // }
 
     // Retorna la possicio d'un char en un char[]
-    //      si no el troba retorna -1.
-    public static int trobaIndex(char c, char[] abecedari) {
+    // si no el troba retorna -1.
+    private int trobaIndex(char c, char[] abecedari) {
         for (int i = 0; i < abecedari.length; i++) {
             if (abecedari[i] == c) {
                 return i;
@@ -40,7 +43,7 @@ public class XifradorRotX {
         return -1;
     }
 
-    private static String fesRotX(String cadena, int rotacio) {
+    private String fesRotX(String cadena, int rotacio) {
         StringBuffer resultat = new StringBuffer();
         for (int i = 0; i < cadena.length(); i++) {
             char c = cadena.charAt(i);
@@ -60,7 +63,8 @@ public class XifradorRotX {
 
             // Calcular la nova posicio
             int newPosChar = (posChar + rotacio) % MINS.length;
-            if (newPosChar < 0) newPosChar = newPosChar + MINS.length;
+            if (newPosChar < 0)
+                newPosChar = newPosChar + MINS.length;
 
             // Guardar, depen de si es Majuscula o Minuscula la lletra pertinent.
             if (esMayu) {
@@ -69,21 +73,49 @@ public class XifradorRotX {
                 resultat.append(MINS[newPosChar]);
             }
         }
-        
+
         return resultat.toString();
     }
 
-    public static String xifraRotX(String cadena, int rotacio) {
+    private String xifraRotX(String cadena, int rotacio) {
         return fesRotX(cadena, rotacio);
     }
 
-    public static String desxifraRotX(String cadena, int rotacio) {
+    private String desxifraRotX(String cadena, int rotacio) {
         return fesRotX(cadena, -rotacio);
     }
 
-    public static void forçaBrutaRotX(String cadenaXifrada) {
-        for (int i = 0; i < MINS.length; i++) {
-            System.out.printf("(%d) %s\n", i, desxifraRotX(cadenaXifrada, i));
+    // private void forçaBrutaRotX(String cadenaXifrada) {
+    // for (int i = 0; i < MINS.length; i++) {
+    // System.out.printf("(%d) %s\n", i, desxifraRotX(cadenaXifrada, i));
+    // }
+    // }
+
+    @Override
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        try {
+            int rotacio = Integer.parseInt(clau);
+
+            if (rotacio < 0 || rotacio > 40)
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+
+            return new TextXifrat(xifraRotX(msg, rotacio).getBytes());
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
         }
-    } 
+    }
+
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        try {
+            int rotacio = Integer.parseInt(clau);
+
+            if (rotacio < 0 || rotacio > 40)
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+
+            return desxifraRotX(xifrat.toString(), rotacio);
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+        }
+    }
 }
