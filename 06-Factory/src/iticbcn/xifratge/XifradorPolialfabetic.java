@@ -1,3 +1,4 @@
+package iticbcn.xifratge;
 // Marc Bertran.
 // Fes un xifratge i desxifratge Polialfabetic.
 

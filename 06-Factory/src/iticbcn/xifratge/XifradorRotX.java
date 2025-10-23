@@ -1,3 +1,4 @@
+package iticbcn.xifratge;
 public class XifradorRotX {
     
     // Variables amb l'abecedari.
