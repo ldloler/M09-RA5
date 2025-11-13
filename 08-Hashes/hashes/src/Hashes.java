@@ -32,54 +32,63 @@ public class Hashes {
             throws NoSuchAlgorithmException, InvalidKeySpecException {
         char[] charset = "abcdefABCDEF0123456789!".toCharArray();
 
+        char[] trypass = new char[6];
+
         npass = 0;
-        int cont1 = 0;
-        int cont2 = 0;
-        int cont3 = 0;
-        int cont4 = 0;
-        int cont5 = 0;
-        
-        for (int j = -1; j < charset.length; j++) {
-            for (int k = -1; k < charset.length; k++) {
-                for (int k2 = -1; k2 < charset.length; k2++) {
-                    for (int l = -1; l < charset.length; l++) {
-                        for (int l2 = -1; l2 < charset.length; l2++) {
+
+        String pw;
+        for (int j = 0; j < charset.length; j++) {
+            if ((pw = pwTrobat(alg, trypass, 0, charset[j], hash, salt)) != null)
+                return pw;
+            for (int k = 0; k < charset.length; k++) {
+                if ((pw = pwTrobat(alg, trypass, 1, charset[k], hash, salt)) != null)
+                    return pw;
+                for (int k2 = 0; k2 < charset.length; k2++) {
+                    if ((pw = pwTrobat(alg, trypass, 2, charset[k2], hash, salt)) != null)
+                        return pw;
+                    for (int l = 0; l < charset.length; l++) {
+                        if ((pw = pwTrobat(alg, trypass, 3, charset[l], hash, salt)) != null)
+                            return pw;
+                        for (int l2 = 0; l2 < charset.length; l2++) {
+                            if ((pw = pwTrobat(alg, trypass, 4, charset[l2], hash, salt)) != null)
+                                return pw;
                             for (int m = 0; m < charset.length; m++) {
-                                int c1 = j < 0? 0: j;
-                                int c2 = k < 0? 0: k;
-                                int c3 = k2 < 0? 0: k2;
-                                int c4 = l < 0? 0: l;
-                                int c5 = l2 < 0? 0: l2;
-
-                                int cont = cont1 + cont2 + cont3 + cont4 + cont5;
-
-                                String s = String.format("%c%c%c%c%c%c", charset[c1], charset[c2], charset[c3],
-                                        charset[c4], charset[c5], charset[m]);
-
-                                // System.out.println(s.substring(s.length()-1 - cont, s.length()) + " " + s);
-
-                                String try_hash = "";
-                                if (alg.equals("SHA-512"))
-                                    try_hash = getSHA512AmbSalt(s.substring(s.length()-1 - cont, s.length()), salt);
-                                else
-                                    try_hash = getPBKDF2AmbSalt(s.substring(s.length()-1 - cont, s.length()), salt);
-
                                 npass++;
-
-                                if (try_hash.equals(hash)) return s.substring(s.length()-1 - cont, s.length());
+                                if ((pw = pwTrobat(alg, trypass, 5, charset[m], hash, salt)) != null)
+                                    return pw;
                             }
-                            cont1 = 1;
                         }
-                        cont2 = 1;
                     }
-                    cont3 = 1;
                 }
-                cont4 = 1;
             }
-            cont5 = 1;
         }
 
         return "";
+    }
+
+    private String pwTrobat(String alg, char[] trypass, int pos, char charset, String hash, String salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        trypass[pos] = charset;
+
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i <= pos; i++) {
+            sb.append(trypass[i]);
+        }
+
+        String s = sb.toString();
+
+        String try_hash = "";
+        if (alg.equals("SHA-512"))
+            try_hash = getSHA512AmbSalt(s, salt);
+        else
+            try_hash = getPBKDF2AmbSalt(s, salt);
+
+        npass++;
+
+        if (try_hash.equals(hash))
+            return s;
+        return null;
     }
 
     private String getInterval(long t1, long t2) {
@@ -98,9 +107,9 @@ public class Hashes {
         Duration duration = Duration.ofMillis(diferencia);
 
         String formattedElapsedTime = String.format(
-                "%d dies / %d hores / %d minuts / %d segons / %d millis - %d", duration.toDays(),
+                "%d dies / %d hores / %d minuts / %d segons / %d millis", duration.toDays(),
                 duration.toHours() % 24, duration.toMinutes() % 60, duration.toSeconds() % 60,
-                duration.toMillis() % 1000, diferencia);
+                duration.toMillis() % 1000);
 
         return formattedElapsedTime;
     }
