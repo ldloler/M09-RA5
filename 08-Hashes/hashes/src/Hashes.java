@@ -37,37 +37,46 @@ public class Hashes {
         int cont2 = 0;
         int cont3 = 0;
         int cont4 = 0;
-        int cont5 = 1;
-        for (int j = 0; j < charset.length; j++) {
-            for (int k = 0; k < charset.length; k++) {
-                for (int k2 = 0; k2 < charset.length; k2++) {
-                    for (int l = 0; l < charset.length; l++) {
-                        for (int l2 = 0; l2 < charset.length; l2++) {
+        int cont5 = 0;
+        
+        for (int j = -1; j < charset.length; j++) {
+            for (int k = -1; k < charset.length; k++) {
+                for (int k2 = -1; k2 < charset.length; k2++) {
+                    for (int l = -1; l < charset.length; l++) {
+                        for (int l2 = -1; l2 < charset.length; l2++) {
                             for (int m = 0; m < charset.length; m++) {
-                                int cont = cont1 + cont2 + cont3 + cont4 + cont5;
-                                String s = String.format("%c%c%c%c%c%c", charset[j], charset[k], charset[k2],
-                                        charset[l], charset[l2], charset[m]);
+                                int c1 = j < 0? 0: j;
+                                int c2 = k < 0? 0: k;
+                                int c3 = k2 < 0? 0: k2;
+                                int c4 = l < 0? 0: l;
+                                int c5 = l2 < 0? 0: l2;
 
-                                //System.out.println(s.substring(s.length() - cont, s.length()) + " " + s);
+                                int cont = cont1 + cont2 + cont3 + cont4 + cont5;
+
+                                String s = String.format("%c%c%c%c%c%c", charset[c1], charset[c2], charset[c3],
+                                        charset[c4], charset[c5], charset[m]);
+
+                                // System.out.println(s.substring(s.length()-1 - cont, s.length()) + " " + s);
 
                                 String try_hash = "";
                                 if (alg.equals("SHA-512"))
-                                    try_hash = getSHA512AmbSalt(s, salt);
+                                    try_hash = getSHA512AmbSalt(s.substring(s.length()-1 - cont, s.length()), salt);
                                 else
-                                    try_hash = getPBKDF2AmbSalt(s, salt);
+                                    try_hash = getPBKDF2AmbSalt(s.substring(s.length()-1 - cont, s.length()), salt);
 
                                 npass++;
 
-                                if (try_hash.equals(hash)) return s;
+                                if (try_hash.equals(hash)) return s.substring(s.length()-1 - cont, s.length());
                             }
-                            cont4 = 1;
+                            cont1 = 1;
                         }
-                        cont3 = 1;
+                        cont2 = 1;
                     }
-                    cont2 = 1;
+                    cont3 = 1;
                 }
-                cont1 = 1;
+                cont4 = 1;
             }
+            cont5 = 1;
         }
 
         return "";
